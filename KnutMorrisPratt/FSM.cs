@@ -32,7 +32,7 @@ namespace KnutMorrisPratt
             }
             return delta;
         }
-        public int Search(string text, string substring)
+        public int Search(string substring, string text)
         {
             var delta = CreateDelta(substring);
             int q = 0;
