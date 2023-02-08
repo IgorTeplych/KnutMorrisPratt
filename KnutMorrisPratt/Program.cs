@@ -7,7 +7,8 @@ static class Programm
     static string sub = "Twenty men were convicted";
     public static void Main()
     {
-       SearchInBook();
+        //SearchInBook();
+        SearchInText();
     }
 
     static void SearchInBook()
@@ -15,11 +16,7 @@ static class Programm
         string text = GetBook();
         string substring = sub;
 
-        FSM fSM = new FSM();
-
         Console.WriteLine($"ПОИСК СТРОКИ, КОТОРАЯ ВСТРЕЧАЕТСЯ В КНИГЕ");
-        //Console.WriteLine($"Поиск строки, длинной {substring.Length}, в тексте, длинной {text.Length}, " +
-        //    $"методом FSM занимает {Search(fSM.Search, substring, text)} мс.");
 
         KMP kMP = new KMP();
 
@@ -40,7 +37,20 @@ static class Programm
             $"методом FastPrefixFunc занимает {Search(kMP.SearchFast, substring, text)} мс.");
         Console.ReadLine();
     }
+    static void SearchInText()
+    {
+        Console.WriteLine($"ПОИСК СТРОКИ, КОТОРАЯ ВСТРЕЧАЕТСЯ В ТЕКСТЕ");
+        string substring = "aaBaaaBaBaBaaB";
+        string text = GenerateText(substring, "aaBaaaBaBaBaa");
 
+        KMP kMP = new KMP();
+        Console.WriteLine($"Поиск строки, длинной {substring.Length}, в тексте, длинной {text.Length}, " +
+                  $"методом SlowPrefixFunc занимает {Search(kMP.SearchSlow, substring, text)} мс.");
+
+        Console.WriteLine($"Поиск строки, длинной {substring.Length}, в тексте, длинной {text.Length}, " +
+                  $"методом FastPrefixFunc занимает {Search(kMP.SearchFast, substring, text)} мс.");
+        Console.ReadLine();
+    }
     static long Search(Func<string, string, int> searchMethod, string substring, string text)
     {
         Stopwatch sw = new Stopwatch();
@@ -59,5 +69,23 @@ static class Programm
         string path = Environment.CurrentDirectory + @"\text.doc";
         return File.ReadAllText(path);
     }
+    static string GenerateText(string substring, string agr)
+    {
+        string s = "";
+        string text = GetBook();
+        KMP kMP = new KMP();
+        var pos = kMP.SearchFast(sub, text);
+        bool wr = false;
+        while(s.Length < text.Length)
+        {
+            if (s.Length >= pos && !wr)
+            {
+                s += substring;
+                wr = true;
+            }
+            s += agr;
+        }
 
+        return s;
+    }
 }
